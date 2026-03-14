@@ -1,0 +1,99 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-primary: #f2f2f2;
+  --color-bg-dark: #0D0D0D;
+  --color-text-primary: #0D0D0D;
+  --color-text-muted: #888888;
+  --color-border-light: #E8E8E6;
+  --color-accent: #49C88B;
+  --font-tomato-grotesk: var(--font-tomato-grotesk);
+}
+
+:root {
+  --background: var(--color-bg-primary);
+  --foreground: var(--color-text-primary);
+}
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  html {
+    scroll-behavior: auto !important; /* Lenis handles smooth scroll */
+  }
+  body {
+    background: var(--color-bg-primary);
+    color: var(--color-text-primary);
+    font-family: var(--font-tomato-grotesk), sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Hide OS cursor on pointer-accurate devices (mouse/trackpad).
+     Touch devices keep their native cursor. */
+  @media (pointer: fine) {
+    *, *::before, *::after {
+      cursor: none !important;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6, p, span, a, button, input, textarea, div {
+    font-family: var(--font-tomato-grotesk), sans-serif !important;
+  }
+}
+
+@utility font-tomato {
+  font-family: var(--font-tomato-grotesk), sans-serif;
+}
+
+@utility text-sweep {
+  background: linear-gradient(
+    90deg,
+    var(--sweep-base, #0D0D0D) 0%,
+    var(--sweep-base, #0D0D0D) 25%,
+    #49C88B 35%,
+    #74B9FF 45%,
+    #B39DDB 55%,
+    #ff7675 65%,
+    var(--sweep-base, #0D0D0D) 75%,
+    var(--sweep-base, #0D0D0D) 100%
+  );
+  background-size: 400% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: none; /* Let GSAP handle it */
+}
+
+@utility text-sweep-light {
+  --sweep-base: #ffffff;
+  @apply text-sweep;
+}
+
+/* ─── Glass Card ───────────────────────────────────────────────────────────────
+   Optimized Bento Card styling. Removed heavy filters and complexity for 
+   maximum performance and smoothness.
+───────────────────────────────────────────────────────────────────────────── */
+.glass-card {
+  background: #0d0d0f;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.4s ease, transform 0.4s ease;
+}
+
+.glass-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.03) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
