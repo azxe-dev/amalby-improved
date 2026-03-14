@@ -197,7 +197,7 @@ const Services = () => {
           <div className="md:col-span-2 flex flex-col gap-5">
             <GlassCard className="flex-1 rounded-[32px] p-8 flex flex-col justify-center">
               <p className="text-white italic font-medium leading-[1.6] text-[13px]">
-                "Within 2 weeks, they built us an agent that replaced 3 manual roles."
+                &quot;Within 2 weeks, they built us an agent that replaced 3 manual roles.&quot;
               </p>
               <span className="text-white/30 text-[9px] uppercase font-bold mt-4 tracking-[0.1em]">— Head of Ops, Fintech</span>
             </GlassCard>
