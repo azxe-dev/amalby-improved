@@ -85,8 +85,8 @@ const CTA = () => {
           style={{
             background: "#F2D049",
             borderRadius: "40px",
-            padding: "52px 48px 48px",
-            minHeight: "480px",
+            padding: "clamp(28px, 5vw, 52px) clamp(24px, 4vw, 48px) clamp(28px, 5vw, 48px)",
+            minHeight: "clamp(360px, 50vw, 480px)",
           }}
         >
           {/* Decorative squiggle lines — top right */}
@@ -173,8 +173,8 @@ const CTA = () => {
           style={{
             background: "#F2D049",
             borderRadius: "40px",
-            padding: "52px 48px 48px",
-            minHeight: "480px",
+            padding: "clamp(28px, 5vw, 52px) clamp(24px, 4vw, 48px) clamp(28px, 5vw, 48px)",
+            minHeight: "clamp(360px, 50vw, 480px)",
           }}
         >
           {/* Agent illustration placeholder */}

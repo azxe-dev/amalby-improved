@@ -19,11 +19,11 @@ import { gsap } from "gsap";
  * No deps beyond GSAP (already installed).
  */
 
-const LERP_FACTOR = 0.15;        // ring lag
-const DOT_SIZE    = 8;           // px (larger for visibility)
-const RING_DEFAULT = 40;         // px (larger default)
-const RING_HOVER   = 80;         // px
-const RING_SWALLOW = 120;        // px
+const LERP_FACTOR  = 0.12;        // ring lag — slightly slower for elegance
+const DOT_SIZE     = 6;           // px — smaller, more precise
+const RING_DEFAULT = 36;          // px
+const RING_HOVER   = 72;          // px
+const RING_SWALLOW = 100;         // px
 
 export default function CustomCursor() {
   const dotRef  = useRef<HTMLDivElement>(null);
@@ -68,19 +68,19 @@ export default function CustomCursor() {
 
     switch (state) {
       case "hover":
-        gsap.to(ring, { width: RING_HOVER, height: RING_HOVER, borderRadius: "50%", opacity: 0.8, borderColor: "rgba(255,255,255,0.8)", backgroundColor: "transparent", ...defaults });
-        gsap.to(dot,  { opacity: 0.5, scale: 0.5, ...defaults });
+        gsap.to(ring, { width: RING_HOVER, height: RING_HOVER, borderRadius: "50%", opacity: 0.7, borderColor: "rgba(255,255,255,0.7)", backgroundColor: "transparent", ...defaults });
+        gsap.to(dot,  { opacity: 0.3, scale: 0.5, ...defaults });
         break;
       case "swallow":
-        gsap.to(ring, { width: RING_SWALLOW, height: RING_SWALLOW, borderRadius: "50%", opacity: 0.3, borderColor: "rgba(255,255,255,0.4)", backgroundColor: "transparent", ...defaults });
+        gsap.to(ring, { width: RING_SWALLOW, height: RING_SWALLOW, borderRadius: "50%", opacity: 0.2, borderColor: "rgba(255,255,255,0.3)", backgroundColor: "transparent", ...defaults });
         gsap.to(dot,  { opacity: 0, scale: 0, ...defaults });
         break;
       case "text":
-        gsap.to(ring, { width: 4, height: 40, borderRadius: 2, opacity: 1, borderColor: "rgba(255,255,255,0.9)", backgroundColor: "transparent", ...defaults });
+        gsap.to(ring, { width: 3, height: 36, borderRadius: 2, opacity: 1, borderColor: "rgba(255,255,255,0.9)", backgroundColor: "transparent", ...defaults });
         gsap.to(dot,  { opacity: 0, ...defaults });
         break;
       default:
-        gsap.to(ring, { width: RING_DEFAULT, height: RING_DEFAULT, borderRadius: "50%", opacity: 1, borderColor: "rgba(255,255,255,0.4)", backgroundColor: "transparent", ...defaults });
+        gsap.to(ring, { width: RING_DEFAULT, height: RING_DEFAULT, borderRadius: "50%", opacity: 0.9, borderColor: "rgba(255,255,255,0.35)", backgroundColor: "transparent", ...defaults });
         gsap.to(dot,  { opacity: 1, scale: 1, ...defaults });
     }
   }, []);

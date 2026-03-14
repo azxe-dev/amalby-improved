@@ -12,7 +12,7 @@ export const MagneticButton = ({ children, className = "" }: { children: React.R
     const { height, width, left, top } = ref.current!.getBoundingClientRect();
     const middleX = clientX - (left + width / 2);
     const middleY = clientY - (top + height / 2);
-    setPosition({ x: middleX * 0.3, y: middleY * 0.3 });
+    setPosition({ x: middleX * 0.1, y: middleY * 0.1 });
   };
 
   const reset = () => {
@@ -26,7 +26,7 @@ export const MagneticButton = ({ children, className = "" }: { children: React.R
       ref={ref}
       onMouseMove={handleMouse}
       onMouseLeave={reset}
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.02 }}
       animate={{ x, y }}
       transition={{ type: "spring", stiffness: 150, damping: 15, mass: 0.1 }}
       className={`inline-block ${className}`}

@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import LenisProvider from "@/components/common/LenisProvider";
 import CustomCursor from "@/components/ui/CustomCursor";
+import PageTransition from "@/components/providers/PageTransition";
 
 const tomatoGrotesk = localFont({
   src: [
@@ -73,9 +74,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${tomatoGrotesk.variable} font-tomato-grotesk antialiased`}>
         <LenisProvider>
-          <CustomCursor />
-          <Navbar />
-          {children}
+          <PageTransition>
+            <CustomCursor />
+            <Navbar />
+            {children}
+          </PageTransition>
         </LenisProvider>
       </body>
     </html>
