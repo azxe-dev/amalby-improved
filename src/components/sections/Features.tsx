@@ -111,22 +111,18 @@ const Features = () => {
 
         {/* ══ Bento Grid ════════════════════════════════════════════ */}
         <div
-          className="grid gap-4"
-          style={{
-            gridTemplateColumns: "1fr 1.55fr 1.15fr",
-            gridTemplateRows: "1fr 1fr",
-          }}
+          className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-[1fr_1.55fr_1.15fr]"
+          style={{ gridTemplateRows: "auto" }}
         >
 
           {/* ── Card 1 · Mint · Social proof ──────────────────────── */}
           <div
-            className="feat-card flex flex-col justify-between cursor-default overflow-hidden will-change-transform"
+            className="feat-card flex flex-col justify-between cursor-default overflow-hidden will-change-transform xl:col-start-1 xl:row-start-1"
             style={{
               background: "#49C88B", 
               borderRadius: "32px",
-              padding: "48px 40px", 
+              padding: "40px 36px", 
               minHeight: "280px",
-              gridColumn: "1", gridRow: "1",
               border: "1px solid rgba(0,0,0,0.03)",
             }}
             onPointerEnter={tiltIn} onPointerLeave={tiltOut}
@@ -153,12 +149,11 @@ const Features = () => {
 
           {/* ── Card 2 · Sky blue · Always-on ─────────────────────── */}
           <div
-            className="feat-card flex flex-col justify-between cursor-default overflow-hidden will-change-transform"
+            className="feat-card flex flex-col justify-between cursor-default overflow-hidden will-change-transform xl:col-start-1 xl:row-start-2"
             style={{
               background: "#74B9FF", 
               borderRadius: "32px",
-              padding: "48px 40px",
-              gridColumn: "1", gridRow: "2", 
+              padding: "40px 36px",
               minHeight: "280px",
               border: "1px solid rgba(0,0,0,0.03)",
             }}
@@ -182,12 +177,11 @@ const Features = () => {
 
           {/* ── Card 3 · Center tall · Clean Typography Card ───────── */}
           <div
-            className="feat-card relative flex flex-col justify-between cursor-default overflow-hidden will-change-transform"
+            className="feat-card relative flex flex-col justify-between cursor-default overflow-hidden will-change-transform md:col-span-2 xl:col-span-1 xl:col-start-2 xl:row-start-1 xl:row-span-2"
             style={{
               background: "#0D0D0D", 
               borderRadius: "32px",
-              padding: "56px 44px 44px",
-              gridColumn: "2", gridRow: "1 / span 2",
+              padding: "48px 40px 40px",
               minHeight: "560px",
               border: "1px solid rgba(255,255,255,0.04)",
             }}
@@ -251,12 +245,11 @@ const Features = () => {
 
           {/* ── Card 4 · Lavender · 24/7 autonomous ───────────────── */}
           <div
-            className="feat-card flex flex-col justify-between cursor-default overflow-hidden will-change-transform"
+            className="feat-card flex flex-col justify-between cursor-default overflow-hidden will-change-transform xl:col-start-3 xl:row-start-1"
             style={{
               background: "#DDD6FF", 
               borderRadius: "32px",
-              padding: "48px 40px",
-              gridColumn: "3", gridRow: "1", 
+              padding: "40px 36px",
               minHeight: "280px",
               border: "1px solid rgba(0,0,0,0.03)",
             }}
@@ -280,12 +273,11 @@ const Features = () => {
 
           {/* ── Card 5 · Navy · Animated stat ─────────────────────── */}
           <div
-            className="feat-card relative flex flex-col justify-between cursor-default overflow-hidden will-change-transform"
+            className="feat-card relative flex flex-col justify-between cursor-default overflow-hidden will-change-transform xl:col-start-3 xl:row-start-2"
             style={{
               background: "#08082B", 
               borderRadius: "32px",
-              padding: "48px 40px",
-              gridColumn: "3", gridRow: "2", 
+              padding: "40px 36px",
               minHeight: "280px",
               border: "1px solid rgba(255,255,255,0.05)",
             }}

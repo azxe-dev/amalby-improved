@@ -13,6 +13,9 @@
 :root {
   --background: var(--color-bg-primary);
   --foreground: var(--color-text-primary);
+  /* Force light mode — prevents browser/OS dark mode from inverting our
+     carefully crafted color system. The site has intentional dark sections. */
+  color-scheme: light only;
 }
 
 @layer base {
@@ -23,6 +26,7 @@
   }
   html {
     scroll-behavior: auto !important; /* Lenis handles smooth scroll */
+    color-scheme: light only; /* Belt-and-suspenders lock to light mode */
   }
   body {
     background: var(--color-bg-primary);

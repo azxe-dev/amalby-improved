@@ -59,6 +59,9 @@ const tomatoGrotesk = localFont({
 export const metadata: Metadata = {
   title: "Amalby | AI Implementation Agency",
   description: "Boutique AI agency specializing in AI implementation, AI Agents, and Web Development for SMBs.",
+  other: {
+    "color-scheme": "light",
+  },
 };
 
 export default function RootLayout({
