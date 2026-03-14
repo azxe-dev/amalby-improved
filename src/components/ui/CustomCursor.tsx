@@ -93,66 +93,11 @@ export default function CustomCursor() {
     applyState("default");
   }, [applyState]);
 
-  // ─── RAF loop – lerp ring + elastic stretch ──────────────────────
-  const tick = useCallback(() => {
-    const ring = ringRef.current;
-    if (!ring) return;
-
-    // 1. Position Lerping
-    ringPos.current.x += (mouse.current.x - ringPos.current.x) * LERP_FACTOR;
-    ringPos.current.y += (mouse.current.y - ringPos.current.y) * LERP_FACTOR;
-
-    // 2. Velocity Calculation
-    const dx = mouse.current.x - lastMouse.current.x;
-    const dy = mouse.current.y - lastMouse.current.y;
-    vel.current.x += (dx - vel.current.x) * 0.15;
-    vel.current.y += (dy - vel.current.y) * 0.15;
-    lastMouse.current = { ...mouse.current };
-
-    // 3. Transformation (Stretch + Rotate)
-    const speed = Math.sqrt(vel.current.x ** 2 + vel.current.y ** 2);
-    const stretch = Math.min(speed * 0.05, 1.2); // Cap stretch
-    const angle = Math.atan2(vel.current.y, vel.current.x) * (180 / Math.PI);
-
-    // Get current dimensions for center calculation without layout thrashing
-    const rSize = cursorState.current === "hover" ? RING_HOVER : 
-                  cursorState.current === "swallow" ? RING_SWALLOW : 
-                  cursorState.current === "text" ? 40 : RING_DEFAULT;
-
-    // Apply only in default/hover states for organic feel
-    if (cursorState.current !== "swallow" && cursorState.current !== "text") {
-      gsap.set(ring, {
-        x: ringPos.current.x - rSize / 2,
-        y: ringPos.current.y - rSize / 2,
-        rotate: angle,
-        scaleX: 1 + stretch,
-        scaleY: 1 - stretch * 0.4,
-      });
-    } else {
-      gsap.set(ring, {
-        x: ringPos.current.x - rSize / 2,
-        y: ringPos.current.y - rSize / 2,
-        rotate: 0,
-        scaleX: 1,
-        scaleY: 1,
-      });
-    }
-
-    // Dot also follows in RAF for perfect sync
-    if (dotRef.current) {
-      gsap.set(dotRef.current, {
-        x: mouse.current.x - DOT_SIZE / 2,
-        y: mouse.current.y - DOT_SIZE / 2,
-      });
-    }
-
-    rafId.current = requestAnimationFrame(tick);
-  }, []);
-
   // ─── Visibility on enter/leave window ────────────────────────────
   const onEnter = useCallback(() => {
     gsap.to([dotRef.current, ringRef.current], { opacity: 1, duration: 0.4 });
   }, []);
+
   const onLeave = useCallback(() => {
     gsap.to([dotRef.current, ringRef.current], { opacity: 0, duration: 0.4 });
   }, []);
@@ -162,6 +107,7 @@ export default function CustomCursor() {
     gsap.to(ringRef.current, { scale: 0.7, duration: 0.15, ease: "power2.in" });
     gsap.to(dotRef.current,  { scale: 1.8, duration: 0.15, ease: "power2.in" });
   }, []);
+
   const onUp = useCallback(() => {
     gsap.to(ringRef.current, { scale: 1, duration: 0.5, ease: "elastic.out(1.2, 0.4)" });
     gsap.to(dotRef.current,  { scale: 1, duration: 0.5, ease: "elastic.out(1.2, 0.4)" });
@@ -170,6 +116,59 @@ export default function CustomCursor() {
   useEffect(() => {
     // Only run on non-touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    // Move tick inside useEffect to avoid exhaustive-deps issues with recursive RAF
+    const tick = () => {
+      const ring = ringRef.current;
+      if (!ring) return;
+
+      // 1. Position Lerping
+      ringPos.current.x += (mouse.current.x - ringPos.current.x) * LERP_FACTOR;
+      ringPos.current.y += (mouse.current.y - ringPos.current.y) * LERP_FACTOR;
+
+      // 2. Velocity Calculation
+      const dx = mouse.current.x - lastMouse.current.x;
+      const dy = mouse.current.y - lastMouse.current.y;
+      vel.current.x += (dx - vel.current.x) * 0.15;
+      vel.current.y += (dy - vel.current.y) * 0.15;
+      lastMouse.current = { ...mouse.current };
+
+      // 3. Transformation (Stretch + Rotate)
+      const speed = Math.sqrt(vel.current.x ** 2 + vel.current.y ** 2);
+      const stretch = Math.min(speed * 0.05, 1.2); 
+      const angle = Math.atan2(vel.current.y, vel.current.x) * (180 / Math.PI);
+
+      const rSize = cursorState.current === "hover" ? RING_HOVER : 
+                    cursorState.current === "swallow" ? RING_SWALLOW : 
+                    cursorState.current === "text" ? 40 : RING_DEFAULT;
+
+      if (cursorState.current !== "swallow" && cursorState.current !== "text") {
+        gsap.set(ring, {
+          x: ringPos.current.x - rSize / 2,
+          y: ringPos.current.y - rSize / 2,
+          rotate: angle,
+          scaleX: 1 + stretch,
+          scaleY: 1 - stretch * 0.4,
+        });
+      } else {
+        gsap.set(ring, {
+          x: ringPos.current.x - rSize / 2,
+          y: ringPos.current.y - rSize / 2,
+          rotate: 0,
+          scaleX: 1,
+          scaleY: 1,
+        });
+      }
+
+      if (dotRef.current) {
+        gsap.set(dotRef.current, {
+          x: mouse.current.x - DOT_SIZE / 2,
+          y: mouse.current.y - DOT_SIZE / 2,
+        });
+      }
+
+      rafId.current = requestAnimationFrame(tick);
+    };
 
     window.addEventListener("mousemove",   onMove,  { passive: true });
     window.addEventListener("mouseover",   onOver,  { passive: true });
@@ -191,7 +190,7 @@ export default function CustomCursor() {
       window.removeEventListener("mousedown",  onDown);
       window.removeEventListener("mouseup",    onUp);
     };
-  }, [onMove, onOver, onOut, onEnter, onLeave, onDown, onUp, tick]);
+  }, [onMove, onOver, onOut, onEnter, onLeave, onDown, onUp]);
 
   return (
     <>
