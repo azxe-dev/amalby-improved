@@ -126,8 +126,8 @@ const Services = () => {
   }, { scope: sectionRef });
 
   return (
-    <section ref={sectionRef} className="bg-[#f2f2f2] px-[12px] md:px-[20px] py-[6px] font-tomato">
-      <div className="relative max-w-[1400px] mx-auto bg-[#0A0A0A] rounded-[40px] md:rounded-[48px] p-6 md:p-14 overflow-hidden">
+    <section ref={sectionRef} className="bg-[#f2f2f2] px-[6px] py-[6px] font-tomato">
+      <div className="relative w-full bg-[#0A0A0A] rounded-[40px] md:rounded-[48px] p-6 md:p-14 overflow-hidden">
 
         {/* Subtle static glow — no blur animation, just ambient lighting */}
         <div aria-hidden="true" className="absolute inset-0 pointer-events-none overflow-hidden">
