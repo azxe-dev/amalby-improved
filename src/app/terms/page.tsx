@@ -7,7 +7,7 @@ export default function TermsPage() {
   return (
     <LegalLayout 
       title="Terms of Service" 
-      subtitle="These terms govern your partnership with Amalby and the utilization of our proprietary AI implementation frameworks."
+      subtitle="These terms govern your engagement with Amalby and the services we deliver across the EU, UK, and UAE."
     >
       <LegalSection title="1. Engagement & Scope">
         <p className="mb-4">
@@ -53,7 +53,7 @@ export default function TermsPage() {
 
       <LegalSection title="6. Contact">
         <p>
-          For any legal inquiries regarding these terms, please contact <a href="mailto:legal@amalby.com" className="text-black underline underline-offset-4 decoration-black/10 hover:decoration-black transition-colors">legal@amalby.com</a>.
+          For any questions regarding these terms, contact us at <a href="mailto:hello@amalby.com" className="text-black underline underline-offset-4 decoration-black/10 hover:decoration-black transition-colors">hello@amalby.com</a>.
         </p>
       </LegalSection>
     </LegalLayout>

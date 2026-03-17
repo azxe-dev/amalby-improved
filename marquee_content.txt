@@ -1,0 +1,233 @@
+﻿"use client";
+
+import React, { useRef } from "react";
+import { gsap } from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
+
+/* â•â• Data â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+interface Tool { name: string; bg: string; }â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+interface Tool { name: string; bg: string; icon: React.ReactNode; }
+
+const TILE_SIZE = 160;
+const TILE_GAP = 12;
+
+const ROW1: Tool[] = [
+  { name: "OpenAI",      bg: "rgba(0, 0, 0, 0.4)",      icon: <OpenAIIcon /> }, 
+  { name: "Claude",      bg: "rgba(217, 119, 87, 0.2)", icon: <ClaudeIcon /> }, 
+  { name: "React",       bg: "rgba(97, 218, 251, 0.2)", icon: <ReactIcon /> },  
+  { name: "Gemini",      bg: "rgba(38, 221, 249, 0.2)", icon: <GeminiIcon /> }, 
+  { name: "n8n",         bg: "rgba(234, 75, 113, 0.2)", icon: <N8NIcon /> },    
+  { name: "Next.js",     bg: "rgba(255, 255, 255, 0.05)", icon: <NextJSIcon /> }, 
+  { name: "Supabase",    bg: "rgba(52, 178, 123, 0.2)", icon: <SupabaseIcon /> }, 
+  { name: "Python",      bg: "rgba(55, 118, 171, 0.2)", icon: <PythonIcon /> }, 
+];
+
+const ROW2: Tool[] = [
+  { name: "GitHub",      bg: "rgba(24, 23, 23, 0.4)",   icon: <GitHubIcon /> }, 
+  { name: "Vercel",      bg: "rgba(255, 255, 255, 0.1)", icon: <VercelIcon /> }, 
+  { name: "Zapier",      bg: "rgba(255, 79, 0, 0.2)",   icon: <ZapierIcon /> }, 
+  { name: "LangChain",   bg: "rgba(0, 163, 129, 0.2)",  icon: <LangChainIcon /> }, 
+  { name: "Make",        bg: "rgba(123, 44, 191, 0.2)", icon: <MakeIcon /> },    
+  { name: "Claude",      bg: "rgba(217, 119, 87, 0.2)", icon: <ClaudeIcon /> }, 
+  { name: "Supabase",    bg: "rgba(52, 178, 123, 0.2)", icon: <SupabaseIcon /> }, 
+  { name: "GitHub",      bg: "rgba(24, 23, 23, 0.4)",   icon: <GitHubIcon /> }, 
+];
+
+/* â•â• GSAP Marquee Row â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+function useMarquee(
+  trackRef: React.RefObject<HTMLDivElement | null>,
+  direction: "left" | "right",
+  duration: number
+) {
+  useGSAP(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    // 1. Create the base endless loop
+    const timeline = gsap.timeline({
+      repeat: -1,
+      defaults: { ease: "none", force3D: true }
+    });
+
+    if (direction === "left") {
+      timeline.to(track, {
+        xPercent: -50,
+        duration,
+      });
+    } else {
+      gsap.set(track, { xPercent: -50 });
+      timeline.to(track, {
+        xPercent: 0,
+        duration,
+      });
+    }
+
+    // 2. Map scroll velocity to marquee timeScale (speed)
+    // We want the marquee to "whirl" (up to 8x speed) and then smoothly "settle"
+    ScrollTrigger.create({
+      onUpdate: (self) => {
+        const velocity = Math.abs(self.getVelocity());
+        if (velocity > 10) {
+          // Map velocity (approx 0-5000) to timeScale (1-8)
+          const targetScale = 1 + (velocity / 600);
+          gsap.to(timeline, { 
+            timeScale: targetScale, 
+            duration: 0.3, 
+            ease: "power2.out",
+            overwrite: true 
+          });
+        }
+      }
+    });
+
+    // 3. Continuously "settle" back to 1.0 speed when not over-scrolling
+    // This creates the inertia effect where it takes a moment to slow down.
+    const ticker = () => {
+      if (timeline.timeScale() > 1) {
+        const current = timeline.timeScale();
+        // Decay the speed back to 1
+        timeline.timeScale(gsap.utils.interpolate(current, 1, 0.05));
+      }
+    };
+    
+    gsap.ticker.add(ticker);
+
+    return () => {
+      gsap.ticker.remove(ticker);
+      timeline.kill();
+    };
+
+  }, { scope: trackRef });
+}
+
+/* â•â• Row Component â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+const MarqueeRow = ({ tools, direction, duration }: { tools: Tool[]; direction: "left" | "right"; duration: number }) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  
+  // Duplicate for seamless loop
+  const doubledTools = [...tools, ...tools];
+
+  useMarquee(trackRef, direction, duration);
+
+  return (
+    <div className="w-full overflow-visible py-4 -my-4 relative z-10">
+      <div 
+        ref={trackRef} 
+        className="flex" 
+        style={{ width: "max-content", gap: `${TILE_GAP}px`, willChange: "transform" }}
+      >
+        {doubledTools.map((tool, i) => (
+          <div
+            key={`${tool.name}-${i}`}
+            className="group flex flex-col items-center justify-center shrink-0 cursor-default relative overflow-hidden transition-all duration-500"
+            style={{
+              width: TILE_SIZE,
+              height: TILE_SIZE,
+              borderRadius: "40px",
+              background: `linear-gradient(135deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.01) 100%)`,
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              boxShadow: `
+                0 4px 24px -1px rgba(0, 0, 0, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                inset 0 -1px 1px rgba(0, 0, 0, 0.2)
+              `,
+            }}
+            onPointerEnter={(e) => {
+              gsap.to(e.currentTarget, { 
+                y: -10,
+                scale: 1.02,
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                borderColor: "rgba(255, 255, 255, 0.2)",
+                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.5), inset 0 2px 4px rgba(255, 255, 255, 0.1)",
+                duration: 0.6, 
+                ease: "power2.out",
+                overwrite: "auto",
+              });
+              // Dynamic brand color glow on hover
+              gsap.to(e.currentTarget.querySelector(".glow"), {
+                opacity: 0.4,
+                duration: 0.6,
+              });
+            }}
+            onPointerLeave={(e) => {
+              gsap.to(e.currentTarget, { 
+                y: 0,
+                scale: 1,
+                backgroundColor: "transparent",
+                borderColor: "rgba(255, 255, 255, 0.08)",
+                boxShadow: "0 4px 24px -1px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.1)",
+                duration: 0.8, 
+                ease: "power3.out",
+                overwrite: "auto",
+              });
+              gsap.to(e.currentTarget.querySelector(".glow"), {
+                opacity: 0,
+                duration: 0.8,
+              });
+            }}
+          >
+            {/* Dynamic Glow Layer */}
+            <div 
+              className="glow absolute inset-0 opacity-0 pointer-events-none blur-[40px] transition-opacity duration-700"
+              style={{ background: tool.bg }}
+            />
+            
+            <div className="relative z-10 flex items-center justify-center scale-110 pointer-events-none transition-transform duration-500 group-hover:scale-125" style={{ color: tool.bg.replace("0.2", "1").replace("0.4", "1") }}>
+              {tool.icon}
+            </div>
+            
+            {/* Glass Glint Overlay */}
+            <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-white/[0.03] to-transparent pointer-events-none" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/* â•â• Main Section â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
+
+const MarqueeSection = () => {
+  const sectionRef = useRef<HTMLDivElement>(null);
+
+  return (
+    <div className="px-[12px] md:px-[20px] bg-[#f2f2f2] py-[6px]">
+      <section 
+        ref={sectionRef} 
+        className="bg-[#000000] py-24 overflow-hidden relative rounded-[32px] md:rounded-[48px]"
+      >
+        {/* Edge Fades */}
+        <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#000000] to-transparent z-20 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#000000] to-transparent z-20 pointer-events-none" />
+
+        <div className="max-w-[1400px] mx-auto px-6 mb-16 relative z-10">
+        <h2 
+          className="text-white font-semibold leading-[1.1] tracking-tight"
+          style={{ fontSize: "clamp(36px, 5vw, 64px)" }}
+        >
+          Built with the best<br />
+          <span className="text-white/30">AI ecosystem.</span>
+        </h2>
+      </div>
+
+      <div className="flex flex-col gap-3">
+        {/* Row 1 - Left */}
+        <MarqueeRow tools={ROW1} direction="left" duration={25} />
+        
+        {/* Row 2 - Right (Offset handled by direction start point) */}
+        <MarqueeRow tools={ROW2} direction="right" duration={30} />
+      </div>
+    </section>
+  </div>
+  );
+};
+
+export default MarqueeSection;

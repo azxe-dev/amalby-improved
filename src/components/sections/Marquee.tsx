@@ -171,13 +171,16 @@ function useMarquee(
     });
 
     // 3. Continuously "settle" back to 1.0 speed when not over-scrolling
-    // This creates the inertia effect where it takes a moment to slow down.
+    // Guard: skip entirely if already at rest (< 1.005) to avoid wasted RAF work
     const ticker = () => {
-      if (timeline.timeScale() > 1) {
-        const current = timeline.timeScale();
-        // Decay the speed back to 1
-        timeline.timeScale(gsap.utils.interpolate(current, 1, 0.05));
+      const current = timeline.timeScale();
+      // Dead-zone: if within 0.5% of 1.0, snap to exactly 1.0 and stop looping body
+      if (current <= 1.005) {
+        if (current !== 1) timeline.timeScale(1);
+        return;
       }
+      // Exponential decay: feels like genuine inertia
+      timeline.timeScale(gsap.utils.interpolate(current, 1, 0.05));
     };
     
     gsap.ticker.add(ticker);
@@ -210,7 +213,7 @@ const MarqueeRow = ({ tools, direction, duration }: { tools: Tool[]; direction: 
         {doubledTools.map((tool, i) => (
           <div
             key={`${tool.name}-${i}`}
-            className="flex flex-col items-center justify-center shrink-0 cursor-default will-change-transform"
+            className="flex flex-col items-center justify-center shrink-0 cursor-default"
             style={{
               width: TILE_SIZE,
               height: TILE_SIZE,
@@ -253,10 +256,11 @@ const MarqueeSection = () => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div className="px-[12px] md:px-[20px] bg-[#f2f2f2] py-[6px]">
+    <div className="px-[12px] md:px-[20px] bg-transparent py-[6px]">
       <section 
         ref={sectionRef} 
         className="bg-[#000000] py-24 overflow-hidden relative rounded-[32px] md:rounded-[48px]"
+        style={{ boxShadow: "0 0 0 1px rgba(100,200,255,0.06), 0 0 80px -10px rgba(50,170,255,0.10), 0 0 220px -40px rgba(0,140,255,0.05)" }}
       >
         {/* Edge Fades */}
         <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#000000] to-transparent z-20 pointer-events-none" />

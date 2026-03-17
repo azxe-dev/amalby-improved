@@ -35,7 +35,6 @@ const AboutWorkflow = () => {
     <section ref={sectionRef} className="bg-[#f2f2f2] px-[12px] md:px-[20px] py-[40px]">
       <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-5">
         
-        {/* Card: Started in 2026 */}
         <div 
           className="workflow-card col-span-1 bg-white rounded-[40px] p-10 flex flex-col justify-between min-h-[300px] border border-black/5"
         >
@@ -43,22 +42,21 @@ const AboutWorkflow = () => {
           <div>
             <h3 className="text-[64px] font-semibold leading-none tracking-tighter mb-2 text-[#0D0D0D]">2026</h3>
             <p className="text-[#0D0D0D]/50 text-[15px] leading-relaxed">
-              Founded on the cusp of the agentic revolution to help teams move at the speed of thought.
+              Started at the beginning of the agentic shift. Built to stay lean and ship fast.
             </p>
           </div>
         </div>
 
-        {/* Card: Speed */}
         <div 
           className="workflow-card col-span-1 md:col-span-2 bg-[#0D0D0D] rounded-[40px] p-10 flex flex-col justify-between min-h-[300px] overflow-hidden relative"
         >
           <div className="relative z-10">
             <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-[#49C88B]">Velocity</span>
             <h3 className="text-[42px] md:text-[56px] text-white font-semibold leading-[1.1] tracking-tight mt-6 mb-4">
-              Weeks, not quarters.
+              Weeks, not months.
             </h3>
             <p className="text-white/50 text-[18px] max-w-[480px] leading-relaxed">
-              We eliminate the traditional agency bloat. Our internal processes are automated so we can focus entirely on your delivery.
+              No procurement cycles, no extra layers, no hand-offs. We scope, build, and deliver. That&apos;s the whole process.
             </p>
           </div>
           
@@ -76,20 +74,21 @@ const AboutWorkflow = () => {
           </div>
         </div>
 
-        {/* Card: Tech Stack (n8n + OpenClaw) */}
         <div 
           className="workflow-card col-span-1 md:col-span-2 bg-[#49C88B] rounded-[40px] p-10 flex flex-col justify-between min-h-[350px] relative overflow-hidden"
         >
           <div className="relative z-10">
-            <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-black/40">The Engine</span>
+            <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-black/40">The Stack</span>
             <h3 className="text-[42px] md:text-[56px] text-black font-semibold leading-[1.1] tracking-tight mt-6 mb-10">
-              Orchestrated by<br /> 
-              n8n & OpenClaw.
+              Built with the<br />
+              right tools.
             </h3>
             <div className="flex flex-wrap gap-3">
-              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">Visual Workflows</span>
-              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">Agentic RAG</span>
-              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">Self-healing automations</span>
+              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">n8n</span>
+              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">OpenAI</span>
+              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">Claude</span>
+              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">Supabase</span>
+              <span className="bg-black/10 px-5 py-2 rounded-full text-black font-semibold text-[14px]">Next.js</span>
             </div>
           </div>
           
@@ -104,18 +103,16 @@ const AboutWorkflow = () => {
           </div>
         </div>
 
-        {/* Card: What we do */}
         <div 
           className="workflow-card col-span-1 bg-[#F2F2F2] rounded-[40px] p-10 border border-black/10 flex flex-col justify-between min-h-[350px]"
         >
-          <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-black/30">Mission</span>
+          <span className="text-[12px] uppercase font-bold tracking-[0.2em] text-black/30">What We Do</span>
           <div>
             <h3 className="text-[32px] text-black font-semibold leading-tight mb-4">
-              Implementing AI for real teams.
+              We build. We ship. We maintain.
             </h3>
             <p className="text-black/60 text-[15px] leading-relaxed">
-              We don&apos;t just consult. We build. We deploy. We maintain. <br /><br />
-              From autonomous outreach agents to deep internal knowledge bases, we bridge the gap between AI hype and production reality.
+              Automations, AI agents, web products, SEO, and GEO. All custom, all scoped to what your business actually needs. We don&apos;t do retainer packages or one-size-fits-all.
             </p>
           </div>
         </div>

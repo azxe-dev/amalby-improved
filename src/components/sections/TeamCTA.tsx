@@ -50,9 +50,9 @@ const TeamCTA = () => {
       <div className="max-w-[1800px] mx-auto">
         <div
           ref={cardRef}
-          className="relative overflow-hidden flex flex-col justify-between items-center text-center will-change-transform"
+          className="relative overflow-hidden flex flex-col justify-between items-center text-center"
           style={{
-            background: "#F2D049", // Yellow matching the existing CTA palette
+            background: "#F2D049",
             borderRadius: "48px",
             padding: "80px 48px",
             minHeight: "450px",
@@ -72,20 +72,20 @@ const TeamCTA = () => {
               className="text-black font-semibold leading-[1.1] mb-8"
               style={{ fontSize: "clamp(48px, 6vw, 96px)", letterSpacing: "-0.04em" }}
             >
-              The humans behind<br />
-              the machines.
+              Got a project<br />
+              in mind?
             </h2>
 
             <p className="text-black/60 text-[18px] md:text-[21px] leading-relaxed mb-12 max-w-xl mx-auto font-medium">
-              We&apos;re a small, obsessive team of builders, engineers, and AI architects. Want to see who&apos;s pulling the strings?
+              We&apos;re a focused team working on real problems for businesses in the EU, UK, and UAE. If you have something to build, let&apos;s talk.
             </p>
 
             <MagneticButton>
               <Link
-                href="/team"
-                className="inline-flex items-center gap-3 bg-black text-white font-semibold text-[16px] px-10 py-5 rounded-full hover:bg-black/80 transition-all scale-100 hover:scale-105"
+                href="/contact"
+                className="inline-flex items-center gap-3 bg-black text-white font-semibold text-[16px] px-10 py-5 rounded-full hover:bg-black/80 transition-all"
               >
-                Meet our team <span className="text-[20px]">→</span>
+                Get in touch <span className="text-[20px]">→</span>
               </Link>
             </MagneticButton>
           </div>

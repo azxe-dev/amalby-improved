@@ -12,29 +12,34 @@ import { gsap } from "gsap";
  *
  * States
  *   default  → small ring, small dot
- *   hover    → ring expands, blurs backdrop like a lens, dot fades
+ *   hover    → ring expands, dot fades
  *   swallow  → ring covers the hovered element edge-to-edge, dot gone
  *   text     → ring squishes to a thin I-beam bar
  *
- * No deps beyond GSAP (already installed).
+ * ─── KEY ARCHITECTURE NOTE ───────────────────────────────────────────────────
+ * This cursor uses gsap.ticker.add() instead of requestAnimationFrame().
+ * This means the cursor rides the SAME loop as Lenis + ScrollTrigger — one
+ * unified pipeline timed to the display's vsync. Having a separate RAF loop
+ * causes micro-stutters because two loops compete for frame budget and they
+ * inevitably drift out of phase with each other.
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
-const LERP_FACTOR  = 0.12;        // ring lag — slightly slower for elegance
-const DOT_SIZE     = 6;           // px — smaller, more precise
-const RING_DEFAULT = 36;          // px
-const RING_HOVER   = 72;          // px
-const RING_SWALLOW = 100;         // px
+const LERP_FACTOR  = 0.12;   // ring lag — slightly slower for elegance
+const DOT_SIZE     = 6;      // px — smaller, more precise
+const RING_DEFAULT = 36;     // px
+const RING_HOVER   = 72;     // px
+const RING_SWALLOW = 100;    // px
 
 export default function CustomCursor() {
   const dotRef  = useRef<HTMLDivElement>(null);
   const ringRef = useRef<HTMLDivElement>(null);
 
-  // Position & Velocity tracking
+  // Position & velocity tracking — stored as mutable refs, never triggers re-renders
   const mouse    = useRef({ x: 0, y: 0 });
   const lastMouse = useRef({ x: 0, y: 0 });
   const ringPos  = useRef({ x: 0, y: 0 });
   const vel      = useRef({ x: 0, y: 0 });
-  const rafId    = useRef<number>(0);
   const cursorState = useRef<"default" | "hover" | "swallow" | "text">("default");
 
   // ─── Pointer tracking ────────────────────────────────────────────
@@ -46,7 +51,6 @@ export default function CustomCursor() {
   // ─── Hover target detection ──────────────────────────────────────
   const getState = useCallback((el: Element | null): typeof cursorState.current => {
     if (!el) return "default";
-    // Walk up the DOM
     let node: Element | null = el;
     while (node) {
       const tag = node.tagName?.toLowerCase();
@@ -85,29 +89,14 @@ export default function CustomCursor() {
     }
   }, []);
 
-  const onOver = useCallback((e: MouseEvent) => {
-    applyState(getState(e.target as Element));
-  }, [applyState, getState]);
-
-  const onOut = useCallback(() => {
-    applyState("default");
-  }, [applyState]);
-
-  // ─── Visibility on enter/leave window ────────────────────────────
-  const onEnter = useCallback(() => {
-    gsap.to([dotRef.current, ringRef.current], { opacity: 1, duration: 0.4 });
-  }, []);
-
-  const onLeave = useCallback(() => {
-    gsap.to([dotRef.current, ringRef.current], { opacity: 0, duration: 0.4 });
-  }, []);
-
-  // ─── Click pulse ─────────────────────────────────────────────────
-  const onDown = useCallback(() => {
+  const onOver  = useCallback((e: MouseEvent) => { applyState(getState(e.target as Element)); }, [applyState, getState]);
+  const onOut   = useCallback(() => { applyState("default"); }, [applyState]);
+  const onEnter = useCallback(() => { gsap.to([dotRef.current, ringRef.current], { opacity: 1, duration: 0.4 }); }, []);
+  const onLeave = useCallback(() => { gsap.to([dotRef.current, ringRef.current], { opacity: 0, duration: 0.4 }); }, []);
+  const onDown  = useCallback(() => {
     gsap.to(ringRef.current, { scale: 0.7, duration: 0.15, ease: "power2.in" });
     gsap.to(dotRef.current,  { scale: 1.8, duration: 0.15, ease: "power2.in" });
   }, []);
-
   const onUp = useCallback(() => {
     gsap.to(ringRef.current, { scale: 1, duration: 0.5, ease: "elastic.out(1.2, 0.4)" });
     gsap.to(dotRef.current,  { scale: 1, duration: 0.5, ease: "elastic.out(1.2, 0.4)" });
@@ -117,30 +106,38 @@ export default function CustomCursor() {
     // Only run on non-touch devices
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
-    // Move tick inside useEffect to avoid exhaustive-deps issues with recursive RAF
+    /**
+     * THE KEY CHANGE: gsap.ticker.add() instead of requestAnimationFrame()
+     *
+     * Before: cursor had its own RAF loop running in parallel with GSAP+Lenis ticker.
+     * Two loops = two different frame budgets competing = micro-stutter every frame.
+     *
+     * Now: cursor tick runs inside the SAME unified ticker as Lenis + ScrollTrigger.
+     * Guaranteed to fire once per frame, perfectly in sync, zero competition.
+     */
     const tick = () => {
       const ring = ringRef.current;
       if (!ring) return;
 
-      // 1. Position Lerping
+      // 1. Lerp ring toward mouse
       ringPos.current.x += (mouse.current.x - ringPos.current.x) * LERP_FACTOR;
       ringPos.current.y += (mouse.current.y - ringPos.current.y) * LERP_FACTOR;
 
-      // 2. Velocity Calculation
+      // 2. Velocity for stretch effect
       const dx = mouse.current.x - lastMouse.current.x;
       const dy = mouse.current.y - lastMouse.current.y;
       vel.current.x += (dx - vel.current.x) * 0.15;
       vel.current.y += (dy - vel.current.y) * 0.15;
       lastMouse.current = { ...mouse.current };
 
-      // 3. Transformation (Stretch + Rotate)
+      // 3. Stretch + rotate transform
       const speed = Math.sqrt(vel.current.x ** 2 + vel.current.y ** 2);
-      const stretch = Math.min(speed * 0.05, 1.2); 
+      const stretch = Math.min(speed * 0.05, 1.2);
       const angle = Math.atan2(vel.current.y, vel.current.x) * (180 / Math.PI);
 
-      const rSize = cursorState.current === "hover" ? RING_HOVER : 
-                    cursorState.current === "swallow" ? RING_SWALLOW : 
-                    cursorState.current === "text" ? 40 : RING_DEFAULT;
+      const rSize = cursorState.current === "hover"   ? RING_HOVER    :
+                    cursorState.current === "swallow"  ? RING_SWALLOW  :
+                    cursorState.current === "text"     ? 40            : RING_DEFAULT;
 
       if (cursorState.current !== "swallow" && cursorState.current !== "text") {
         gsap.set(ring, {
@@ -166,10 +163,9 @@ export default function CustomCursor() {
           y: mouse.current.y - DOT_SIZE / 2,
         });
       }
-
-      rafId.current = requestAnimationFrame(tick);
     };
 
+    // Register all event listeners
     window.addEventListener("mousemove",   onMove,  { passive: true });
     window.addEventListener("mouseover",   onOver,  { passive: true });
     window.addEventListener("mouseout",    onOut,   { passive: true });
@@ -178,10 +174,12 @@ export default function CustomCursor() {
     window.addEventListener("mousedown",   onDown,  { passive: true });
     window.addEventListener("mouseup",     onUp,    { passive: true });
 
-    rafId.current = requestAnimationFrame(tick);
+    // Add to GSAP's unified ticker — NOT a separate requestAnimationFrame
+    gsap.ticker.add(tick);
 
     return () => {
-      cancelAnimationFrame(rafId.current);
+      // Remove from the SAME ticker reference
+      gsap.ticker.remove(tick);
       window.removeEventListener("mousemove",  onMove);
       window.removeEventListener("mouseover",  onOver);
       window.removeEventListener("mouseout",   onOut);
@@ -210,7 +208,7 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* ── Magnetic Liquid Core ───────────────────────── */}
+      {/* ── Magnetic Liquid Ring ───────────────────────── */}
       <div
         ref={ringRef}
         aria-hidden="true"

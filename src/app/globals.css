@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-primary: #f2f2f2;
+  --color-bg-primary: #050505;
   --color-bg-dark: #0D0D0D;
   --color-text-primary: #0D0D0D;
   --color-text-muted: #888888;
@@ -27,6 +27,7 @@
   html {
     scroll-behavior: auto !important; /* Lenis handles smooth scroll */
     color-scheme: light only; /* Belt-and-suspenders lock to light mode */
+    overflow-x: clip; /* Prevent horizontal scroll from hero text transforms */
   }
   body {
     background: var(--color-bg-primary);
@@ -34,6 +35,7 @@
     font-family: var(--font-tomato-grotesk), sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip; /* Belt-and-suspenders: both html AND body needed */
   }
 
   /* Hide OS cursor on pointer-accurate devices (mouse/trackpad).
@@ -86,7 +88,10 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   position: relative;
   overflow: hidden;
-  transition: border-color 0.4s ease, transform 0.4s ease;
+  /* No CSS transition here — GSAP exclusively owns hover animations.
+     Having both CSS transition + GSAP.to() on the same props causes jitter. */
+  transform: translateZ(0); /* Promote to GPU layer immediately */
+  backface-visibility: hidden; /* Prevent sub-pixel flicker on some GPUs */
 }
 
 .glass-card::before {

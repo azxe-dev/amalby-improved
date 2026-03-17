@@ -35,15 +35,15 @@ const AboutHero = () => {
           className="text-[#0D0D0D] font-semibold leading-[1.05] tracking-tight mb-8"
           style={{ fontSize: "clamp(48px, 8vw, 108px)" }}
         >
-          Built for Speed. <br />
-          <span className="text-[#49C88B]">Scaled with Intelligence.</span>
+          Small team.<br />
+          <span className="text-[#49C88B]">Real results.</span>
         </h1>
         <p 
           ref={subRef}
           className="text-[#0D0D0D]/60 font-medium max-w-[640px] mx-auto leading-relaxed"
           style={{ fontSize: "clamp(18px, 1.5vw, 24px)" }}
         >
-          Orchestrating the future of work with high-performance AI agents and internal tooling. Since 2026.
+          Amalby is an AI implementation agency. We build automations, agents, and web products for businesses in the EU, UK, and UAE. Custom work only — no packages, no templates.
         </p>
       </div>
       

@@ -260,7 +260,7 @@ const Navbar = () => {
 
             <div className="hidden md:flex flex-grow md:w-1/2 nav-link-anim min-h-[220px]">
               <div className="w-full h-full bg-[#f4f4f2] rounded-2xl p-6 md:p-8 flex flex-col justify-end overflow-hidden relative group">
-                <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=800&auto=format&fit=crop')] bg-cover bg-center brightness-[0.8] grayscale-[0.3] transition-transform duration-1000 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-br from-[#1a1a2e] via-[#16213e] to-[#0f3460] transition-transform duration-1000 group-hover:scale-105" />
                 <div className="relative z-10">
                   <span className="text-[10px] uppercase tracking-[0.2em] text-white/70 mb-1 block">Internal Standard</span>
                   <h4 className="text-2xl text-white font-semibold leading-tight">Zero fluff delivery.</h4>

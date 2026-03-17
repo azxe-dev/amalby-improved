@@ -12,7 +12,7 @@ gsap.registerPlugin(ScrollTrigger);
 const SOCIALS = [
   {
     name: "LinkedIn",
-    href: "https://linkedin.com",
+    href: "https://linkedin.com/in/alkeshjames",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
         <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -23,7 +23,7 @@ const SOCIALS = [
   },
   {
     name: "X / Twitter",
-    href: "https://twitter.com",
+    href: "https://twitter.com/amalby",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.74l7.73-8.835L1.254 2.25H8.08l4.259 5.631L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -32,7 +32,7 @@ const SOCIALS = [
   },
   {
     name: "Instagram",
-    href: "https://instagram.com",
+    href: "https://instagram.com/amalby.ai",
     icon: (
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
@@ -74,7 +74,6 @@ const SocialTile = ({ name, href, icon }: { name: string; href: string; icon: Re
     gsap.to(tileRef.current, {
       scale: 1.08,
       y: -6,
-      boxShadow: "0 16px 32px rgba(0,0,0,0.25)",
       duration: 0.35,
       ease: "power2.out",
       overwrite: "auto",
@@ -85,7 +84,6 @@ const SocialTile = ({ name, href, icon }: { name: string; href: string; icon: Re
     gsap.to(tileRef.current, {
       scale: 1,
       y: 0,
-      boxShadow: "0 0px 0px rgba(0,0,0,0)",
       duration: 0.45,
       ease: "power3.out",
       overwrite: "auto",
@@ -101,12 +99,22 @@ const SocialTile = ({ name, href, icon }: { name: string; href: string; icon: Re
       aria-label={name}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
-      className="bg-white text-black flex items-center justify-center cursor-pointer"
+      className="text-white flex items-center justify-center cursor-pointer"
       style={{
         borderRadius: "24px",
         width: "120px",
         height: "120px",
-        willChange: "transform, box-shadow",
+        willChange: "transform",
+        background: "linear-gradient(135deg, rgba(255,255,255,0.15) 0%, rgba(255,255,255,0.02) 100%)",
+        backdropFilter: "blur(32px)", /* Extremely frosted */
+        WebkitBackdropFilter: "blur(32px)", /* Safari requirement for glass */
+        border: "1px solid rgba(255,255,255,0.12)", /* The physical glass edge */
+        boxShadow: [
+          "0 8px 32px 0 rgba(0,0,0,0.3)",               /* Outer depth */
+          "inset 0 1px 2px rgba(255,255,255,0.4)",      /* Top brilliant rim light */
+          "inset 1px 0 2px rgba(255,255,255,0.15)",     /* Left side ambient rim */
+          "inset 0 -1px 2px rgba(0,0,0,0.1)"            /* Bottom internal shadow for glass thickness */
+        ].join(", "),
       }}
     >
       {icon}
@@ -152,7 +160,6 @@ const FooterNavLink = ({ label, href, isSecondary = false }: { label: string; hr
       style={{ 
         fontSize: isSecondary ? "clamp(12px, 1vw, 14px)" : "clamp(14px, 1.2vw, 17px)",
         transformOrigin: "right center",
-        willChange: "transform, opacity",
         backfaceVisibility: "hidden",
         WebkitFontSmoothing: "subpixel-antialiased"
       }}
@@ -220,8 +227,8 @@ const Footer = () => {
   }, []);
 
   return (
-    <footer className="bg-[#f2f2f2] px-[12px] md:px-[20px] pt-0 pb-[12px]">
-      <div className="max-w-[1800px] mx-auto bg-black overflow-hidden" style={{ borderRadius: "48px" }}>
+    <footer className="bg-transparent px-[12px] md:px-[20px] pt-0 pb-[12px]">
+      <div className="max-w-[1800px] mx-auto bg-black overflow-hidden" style={{ borderRadius: "48px", boxShadow: "0 0 0 1px rgba(100,200,255,0.06), 0 0 80px -10px rgba(50,170,255,0.10), 0 0 220px -40px rgba(0,140,255,0.05)" }}>
         <div className="flex flex-col md:flex-row items-stretch p-6 gap-6">
 
           {/* ── Left: Social grid ───────────────────────────── */}
@@ -238,7 +245,7 @@ const Footer = () => {
             onMouseLeave={handleCardMouseLeave}
             className="flex-1 flex flex-col justify-between relative overflow-hidden cursor-default"
             style={{
-              background: "#49C88B",
+              background: "#FFFFFF",
               borderRadius: "36px",
               padding: "40px 44px 40px 48px",
               minHeight: "264px",
@@ -252,7 +259,7 @@ const Footer = () => {
                 style={{ fontSize: "clamp(32px, 3vw, 48px)", letterSpacing: "-0.01em", maxWidth: "420px" }}
               >
                 Work with Amalby.<br />
-                Then make it all happen.
+                Let&apos;s build something real.
               </h2>
 
               <div className="shrink-0 flex flex-col gap-0 text-right">
